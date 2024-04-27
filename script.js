@@ -144,6 +144,8 @@ const outputTextarea = document.getElementById('output')
 const inputTextarea = document.getElementById('input')
 const runButton = document.getElementById('run')
 
+let running = false
+
 const display = {
     cursor: document.getElementById('cursor'),
     line: document.getElementById('line'),
@@ -190,7 +192,7 @@ class Logic {
         this.temp = 0
         this.storage = new ObservableMap(drawStorage)
         this.checkpoint = new Map()
-        while (this.line < code.length) {
+        while (this.line < code.length && running) {
             await new Promise((resolve) => setTimeout(resolve, interval))
             const [instruction, operand] = code[this.line]
             instructions.get(instruction).call(this, operand)
@@ -212,6 +214,7 @@ class Logic {
             // )
             this.line++
         }
+        running = false
     }
     exit(exitCode) {
         throw new Error('exit')
@@ -344,7 +347,14 @@ function run() {
     }
 
     const logic = new Logic()
-    logic.run(code)
+    if (!running) {
+        running = true
+        logic.run(code)
+        runButton.innerHTML = 'Stop!'
+    } else {
+        running = false
+        runButton.innerHTML = 'Run!'
+    }
 }
 
 runButton.addEventListener('click', run)
