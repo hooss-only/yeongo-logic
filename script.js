@@ -143,6 +143,7 @@ instructions.set(74, instructionSet.setCheckpoint)
 const outputTextarea = document.getElementById('output')
 const inputTextarea = document.getElementById('input')
 const runButton = document.getElementById('run')
+const clearButton = document.getElementById('clear')
 
 let running = false
 
@@ -351,11 +352,18 @@ function run() {
         running = true
         logic.run(code)
         runButton.innerHTML = 'Stop!'
+        clearButton.disabled = true
     } else {
         running = false
         runButton.innerHTML = 'Run!'
+        clearButton.disabled = false
     }
 }
 
+function clear() {
+    outputTextarea.value = ''
+}
+
 runButton.addEventListener('click', run)
+clearButton.addEventListener('click', clear)
 run()
